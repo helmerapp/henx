@@ -2,10 +2,7 @@
 mod mac;
 
 #[cfg(target_os = "macos")]
-use mac::{
-    encoder_finish, encoder_ingest_bgra_frame, encoder_ingest_yuv_frame, encoder_init, Int, SRData,
-    SRString,
-};
+use mac::{encoder_finish, encoder_ingest_bgra_frame, encoder_ingest_yuv_frame, encoder_init, Int};
 
 #[cfg(target_os = "windows")]
 use windows_capture::encoder::{
@@ -16,7 +13,6 @@ use anyhow::Error;
 use scap::frame::Frame;
 
 mod utils;
-use utils::flip_image_vertical_bgra;
 
 pub struct VideoEncoder {
     first_timestamp: u64,
@@ -81,7 +77,7 @@ impl VideoEncoder {
                     let timestamp_micros = timestamp_nanos.as_micros() as i64;
                     let timestamp_micros_10 = timestamp_micros * 10;
 
-                    let buffer = flip_image_vertical_bgra(
+                    let buffer = utils::flip_image_vertical_bgra(
                         &frame.data,
                         frame.width as usize,
                         frame.height as usize,
