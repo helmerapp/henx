@@ -1,5 +1,4 @@
 {
-  "originHash" : "ddf70d43ca6db9a872232cd9e9631aac5977257e3172ed1f04f11ba801b2dcc6",
   "pins" : [
     {
       "identity" : "swift-rs",
@@ -11,5 +10,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }
