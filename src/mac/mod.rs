@@ -27,4 +27,12 @@ swift!(pub fn encoder_ingest_bgra_frame(
     bgra_bytes_raw: SRData
 ));
 
+swift!(pub fn encoder_ingest_png_frame(
+    enc: *mut std::ffi::c_void,
+    width: Int,
+    height: Int,
+    display_time: Int,
+    png_byte_raw: SRData
+));
+
 swift!(pub fn encoder_finish(enc: *mut std::ffi::c_void));

@@ -10,7 +10,7 @@ use windows_capture::encoder::{
 };
 
 use anyhow::Error;
-use scap::frame::Frame;
+pub use scap::frame::{Frame, FrameType};
 
 mod utils;
 

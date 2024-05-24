@@ -3,27 +3,21 @@
 
 use henx::{VideoEncoder, VideoEncoderOptions};
 use scap::{
-    capturer::{self, CGPoint, CGRect, CGSize, Capturer},
+    capturer::{Area, Capturer, Options, Point, Size},
     frame::FrameType,
 };
 
 fn main() {
     // #1 Check if the platform is supported
-    let supported = scap::is_supported();
-    if !supported {
-        println!("❌ Platform not supported");
+    if !scap::is_supported() {
+        println!("❌ Platform not supported by scap");
         return;
-    } else {
-        println!("✅ Platform supported");
     }
 
     // #2 Check if we have permission to capture the screen
-    let has_permission = scap::has_permission();
-    if !has_permission {
+    if !scap::has_permission() {
         println!("❌ Permission not granted");
         return;
-    } else {
-        println!("✅ Permission granted");
     }
 
     // #3 Get recording targets (WIP)
@@ -32,7 +26,7 @@ fn main() {
 
     const FRAME_TYPE: FrameType = FrameType::BGRAFrame;
     // #4 Create Options
-    let options = capturer::Options {
+    let options = Options {
         fps: 60,
         targets,
         show_cursor: true,
@@ -40,9 +34,9 @@ fn main() {
         excluded_targets: None,
         output_type: FRAME_TYPE, // only works on macOS
         output_resolution: scap::capturer::Resolution::_720p,
-        source_rect: Some(CGRect {
-            origin: CGPoint { x: 0.0, y: 0.0 },
-            size: CGSize {
+        source_rect: Some(Area {
+            origin: Point { x: 0.0, y: 0.0 },
+            size: Size {
                 width: 1280.0,
                 height: 680.0,
             },
