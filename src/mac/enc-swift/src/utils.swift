@@ -1,13 +1,62 @@
 import CoreVideo
 
-func createCvPixelBufferFromYuvFrameData(
-    _ width: Int,
-    _ height: Int,
-    _ displayTime: Int,
-    _ luminanceStride: Int,
-    _ luminanceBytes: [UInt8],
-    _ chrominanceStride: Int,
-    _ chrominanceBytes: [UInt8]
+func createCVPixelBufferFromPNGData(_ pngData: Data, _ width: Int, _ height: Int) -> CVPixelBuffer?
+{
+  let options =
+    [
+      kCVPixelBufferCGImageCompatibilityKey: true,
+      kCVPixelBufferCGBitmapContextCompatibilityKey: true,
+    ] as CFDictionary
+  var pixelBuffer: CVPixelBuffer?
+
+  let status = CVPixelBufferCreate(
+    kCFAllocatorDefault,
+    width,
+    height,
+    kCVPixelFormatType_32BGRA,
+    options,
+    &pixelBuffer)
+
+  guard status == kCVReturnSuccess, let buffer = pixelBuffer else {
+    return nil
+  }
+
+  CVPixelBufferLockBaseAddress(buffer, .readOnly)
+  let pixelData = CVPixelBufferGetBaseAddress(buffer)
+
+  guard
+    let context = CGContext(
+      data: pixelData,
+      width: width,
+      height: height,
+      bitsPerComponent: 8,
+      bytesPerRow: CVPixelBufferGetBytesPerRow(buffer),
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue)
+  else {
+    return nil
+  }
+
+  guard let imageSource = CGImageSourceCreateWithData(pngData as CFData, nil),
+    let image = CGImageSourceCreateImageAtIndex(imageSource, 0, nil)
+  else {
+    return nil
+  }
+
+  context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+  CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
+
+  return buffer
+}
+
+func createCVPixelBufferFromYUVFrameData(
+  _ width: Int,
+  _ height: Int,
+  _ displayTime: Int,
+  _ luminanceStride: Int,
+  _ luminanceBytes: [UInt8],
+  _ chrominanceStride: Int,
+  _ chrominanceBytes: [UInt8]
 ) -> CVPixelBuffer? {
 
   let pixelBufferAttributes: CFDictionary =

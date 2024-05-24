@@ -131,6 +131,37 @@ func encoderIngestBgraFrame(
   }
 }
 
+@_cdecl("encoder_ingest_png_frame")
+func encoderIngestPngFrame(
+  _ enc: Encoder,
+  _ width: Int,
+  _ height: Int,
+  _ displayTime: Int,
+  _ pngBytesRaw: SRData
+) {
+  let pngBytes = pngBytesRaw.toArray()
+  let pngData = Data(pngBytes)
+
+  // Create a CVPixelBuffer from PNG data
+  guard let pixelBuffer = createCVPixelBufferFromPNGData(pngData, width, height) else {
+    print("Failed to create pixel buffer from PNG data")
+    return
+  }
+
+  // Append the CVPixelBuffer to the AVAssetWriter
+  if enc.assetWriterInput.isReadyForMoreMediaData {
+    let frameTime = CMTimeMake(value: Int64(displayTime), timescale: 1_000_000_000)
+    let success = enc.pixelBufferAdaptor.append(pixelBuffer, withPresentationTime: frameTime)
+    if !success {
+      print("Asset writer error: \(enc.assetWriter.error?.localizedDescription ?? "Unknown error")")
+    } else {
+      print("PNG frame appended successfully")
+    }
+  } else {
+    print("Asset writer input is not ready for more media data")
+  }
+}
+
 @_cdecl("encoder_finish")
 func encoderFinish(_ enc: Encoder) {
 
