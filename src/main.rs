@@ -3,7 +3,7 @@
 
 use henx::{VideoEncoder, VideoEncoderOptions};
 use scap::{
-    capturer::{self, CGPoint, CGRect, CGSize, Capturer},
+    capturer::{Capturer, Options},
     frame::FrameType,
 };
 
@@ -13,8 +13,6 @@ fn main() {
     if !supported {
         println!("❌ Platform not supported");
         return;
-    } else {
-        println!("✅ Platform supported");
     }
 
     // #2 Check if we have permission to capture the screen
@@ -22,35 +20,22 @@ fn main() {
     if !has_permission {
         println!("❌ Permission not granted");
         return;
-    } else {
-        println!("✅ Permission granted");
     }
 
-    // #3 Get recording targets (WIP)
-    let targets = scap::get_targets();
-    println!("🎯 Targets: {:?}", targets);
-
-    const FRAME_TYPE: FrameType = FrameType::BGRAFrame;
-    // #4 Create Options
-    let options = capturer::Options {
+    // Scap Options
+    let options = Options {
         fps: 60,
-        targets,
+        target: None,
         show_cursor: true,
         show_highlight: true,
         excluded_targets: None,
-        output_type: FRAME_TYPE, // only works on macOS
+        output_type: FrameType::BGRAFrame,
         output_resolution: scap::capturer::Resolution::_720p,
-        source_rect: Some(CGRect {
-            origin: CGPoint { x: 0.0, y: 0.0 },
-            size: CGSize {
-                width: 1280.0,
-                height: 680.0,
-            },
-        }),
+        crop_area: None,
         ..Default::default()
     };
 
-    // #5 Create Recorder
+    // Create Recorder
     let mut recorder = Capturer::new(options);
     let [output_width, output_height] = recorder.get_output_frame_size();
 
