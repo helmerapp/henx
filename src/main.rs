@@ -9,15 +9,13 @@ use scap::{
 
 fn main() {
     // #1 Check if the platform is supported
-    let supported = scap::is_supported();
-    if !supported {
+    if !scap::is_supported() {
         println!("❌ Platform not supported");
         return;
     }
 
     // #2 Check if we have permission to capture the screen
-    let has_permission = scap::has_permission();
-    if !has_permission {
+    if !scap::has_permission() {
         println!("❌ Permission not granted");
         return;
     }
@@ -30,7 +28,7 @@ fn main() {
         show_highlight: true,
         excluded_targets: None,
         output_type: FrameType::BGRAFrame,
-        output_resolution: scap::capturer::Resolution::_720p,
+        output_resolution: scap::capturer::Resolution::Captured,
         crop_area: None,
         ..Default::default()
     };

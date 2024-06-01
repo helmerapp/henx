@@ -129,7 +129,7 @@ impl VideoEncoder {
                 }
             }
             _ => {
-                println!("encoder doesn't currently support this pixel format")
+                println!("henx doesn't support this pixel format yet")
             }
         }
 
