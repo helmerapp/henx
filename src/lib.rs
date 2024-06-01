@@ -4,6 +4,9 @@ mod mac;
 #[cfg(target_os = "macos")]
 use mac::{encoder_finish, encoder_ingest_bgra_frame, encoder_ingest_yuv_frame, encoder_init, Int};
 
+#[cfg(target_os = "macos")]
+use mac::MacEncoder;
+
 #[cfg(target_os = "windows")]
 use windows_capture::encoder::{
     VideoEncoder as WVideoEncoder, VideoEncoderQuality, VideoEncoderType,
@@ -18,8 +21,8 @@ pub struct VideoEncoder {
     first_timestamp: u64,
 
     #[cfg(target_os = "macos")]
-    encoder: *mut std::ffi::c_void,
-
+    encoder: MacEncoder,
+    // encoder: *mut std::ffi::c_void,
     #[cfg(target_os = "windows")]
     encoder: Option<WVideoEncoder>,
 }
@@ -46,13 +49,14 @@ impl VideoEncoder {
         );
 
         #[cfg(target_os = "macos")]
-        let encoder = unsafe {
-            encoder_init(
-                options.width as Int,
-                options.height as Int,
-                options.path.as_str().into(),
-            )
-        };
+        let encoder = MacEncoder::init(options.width, options.height, options.path);
+        // let encoder = unsafe {
+        //     encoder_init(
+        //         options.width as Int,
+        //         options.height as Int,
+        //         options.path.as_str().into(),
+        //     )
+        // };
 
         Self {
             encoder,
@@ -129,7 +133,7 @@ impl VideoEncoder {
                 }
             }
             _ => {
-                println!("encoder doesn't currently support this pixel format")
+                println!("henx doesn't support this pixel format yet.")
             }
         }
 
@@ -147,9 +151,10 @@ impl VideoEncoder {
         }
 
         #[cfg(target_os = "macos")]
-        unsafe {
-            encoder_finish(self.encoder);
-        }
+        self.encoder.finish();
+        // unsafe {
+        //     encoder_finish(self.encoder);
+        // }
         Ok(())
     }
 }
