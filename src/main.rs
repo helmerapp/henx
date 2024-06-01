@@ -30,8 +30,8 @@ fn main() {
         ..Default::default()
     };
 
-    let mut recorder = Capturer::new(options);
-    let [output_width, output_height] = recorder.get_output_frame_size();
+    let mut capturer = Capturer::new(options);
+    let [output_width, output_height] = capturer.get_output_frame_size();
 
     let mut encoder = VideoEncoder::new(VideoEncoderOptions {
         width: output_width as usize,
@@ -39,17 +39,17 @@ fn main() {
         path: "output.mp4".to_string(),
     });
 
-    recorder.start_capture();
+    capturer.start_capture();
 
     // #7 Capture 100 frames
     for _ in 0..120 {
-        let frame = recorder.get_next_frame().expect("Error");
-        let _ = encoder
+        let frame = capturer.get_next_frame().expect("couldn't get next frame");
+        encoder
             .ingest_next_frame(&frame)
             .expect("frame couldn't be encoded");
     }
 
-    recorder.stop_capture();
+    capturer.stop_capture();
 
-    encoder.finish().expect("Failed to finish encoding");
+    encoder.finish().expect("failed to finish encoding");
 }
