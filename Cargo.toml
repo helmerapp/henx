@@ -14,4 +14,4 @@ swift-rs = "1.0.5"
 swift-rs = { version = "1.0.5", features = ["build"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
-windows-capture = "1.1.7"
+windows-capture = { git = "https://github.com/NiiightmareXD/windows-capture", branch="main" }

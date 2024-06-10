@@ -607,7 +607,7 @@ dependencies = [
  "anyhow",
  "scap",
  "swift-rs",
- "windows-capture",
+ "windows-capture 1.2.0 (git+https://github.com/NiiightmareXD/windows-capture?branch=main)",
 ]
 
 [[package]]
@@ -1135,7 +1135,7 @@ dependencies = [
  "sysinfo",
  "tao-core-video-sys",
  "windows 0.52.0",
- "windows-capture",
+ "windows-capture 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -1533,6 +1533,17 @@ name = "windows-capture"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "15e2f94b43842205eb84814f505badade792e7b8cd132e436636ccbf7baa08fc"
+dependencies = [
+ "parking_lot",
+ "rayon",
+ "thiserror",
+ "windows 0.56.0",
+]
+
+[[package]]
+name = "windows-capture"
+version = "1.2.0"
+source = "git+https://github.com/NiiightmareXD/windows-capture?branch=main#6552bace24d60415ca3501ff8d3f38335cd5b26f"
 dependencies = [
  "parking_lot",
  "rayon",
